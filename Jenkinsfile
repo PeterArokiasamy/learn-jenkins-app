@@ -7,11 +7,13 @@ pipeline {
     }
 
     stages {
-        stage('Docker') {
+        /* 
+            Will be implemented by Jenkinsfile-nightly
+            stage('Docker') {
             steps {
                 sh 'docker build -t my-playwright .'
             }
-        }
+        } */
 
         stage('Build') {
             agent {
