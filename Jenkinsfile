@@ -16,7 +16,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'rm -rf /var/jenkins_home/workspace/learn-jenkins-app'
+                sh 'rm -rf /var/jenkins_home/workspace/learn-jenkins-app/*'
             }
         }
 
