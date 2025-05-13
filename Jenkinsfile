@@ -79,6 +79,8 @@ pipeline {
                 docker {
                     image 'node:18-alpine'
                     reuseNode true
+                    //To connect to Netlify API
+                    args '--dns 8.8.8.8'
                 }
             }
             steps {
