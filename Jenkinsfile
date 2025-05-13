@@ -7,6 +7,19 @@ pipeline {
 
     stages {
 
+        stage('Clean Workspace') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                    args '-u root'
+                }
+            }
+            steps {
+                sh 'rm -rf /var/jenkins_home/workspace/learn-jenkins-app'
+            }
+        }
+
         stage('Build') {
             agent {
                 docker {
