@@ -38,8 +38,20 @@ pipeline {
             }
         } 
         stage('Build Docker image') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    //"docker build" command below as to connect to Docker Daemon
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
+                }
+            }
             steps {
-                sh 'docker build -f ci/Dockerfile -t myjenkinsapp .'
+                //Install Docker using AWS Linux extras, as aws-cli image doesnt have docker installed.
+                sh '''
+                    amazon-linux-extras install docker
+                    docker build -t myjenkinsapp .
+                '''
             }
         }
         stage('Deploy to AWS') {
