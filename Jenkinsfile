@@ -15,6 +15,25 @@ pipeline {
             }
         } */
 
+        stage('AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    /*
+                        Without --entrypoint, job will run for Infinite time. 
+                        To start a container with above image, we need to pass args --entrypoint=''.
+                        Above command will force image entrypoint to be disabled.
+                    */
+                    args "--entrypoint=''"
+                }
+            }
+            steps {
+                sh '''
+                    aws --version
+                '''
+            }
+        }
+
         stage('Build') {
             agent {
                 docker {
