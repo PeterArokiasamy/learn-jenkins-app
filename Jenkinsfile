@@ -42,7 +42,7 @@ pipeline {
                 docker {
                     image 'amazon/aws-cli'
                     reuseNode true
-                    //"docker build" command below as to connect to Docker Daemon
+                    //"docker build" command below has to connect to Docker Daemon
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                 }
             }
