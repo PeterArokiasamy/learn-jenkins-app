@@ -9,6 +9,7 @@ pipeline {
         AWS_ECS_CLUSTER = 'LearnJenkinsApp-Cluster-Prod'
         AWS_ECS_SERVICE_PROD = 'LearnJenkinsApp-TD-Prod-service-dmskjm5n'
         AWS_ECS_TD_PROD = 'LearnJenkinsApp-TD-Prod'
+        AWS_DOCKER_REGISTRY ='965496216011.dkr.ecr.us-east-1.amazonaws.com'
     }
 
     stages {
@@ -48,10 +49,14 @@ pipeline {
                 }
             }
             steps {
-                //Install Docker using AWS Linux extras, as aws-cli image doesnt have docker installed.
-                sh '''
-                    docker build -f ci/Dockerfile-nginx -t $APP_NAME:$REACT_APP_VERSION .
-                '''
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                    //Install Docker using AWS Linux extras, as aws-cli image doesnt have docker installed.
+                    sh '''
+                        docker build -t $AWS_DOCKER_REGISTRY/$APP_NAME:$REACT_APP_VERSION .
+                        aws ecr get-login-password | docker login --username AWS --password-stdin $AWS_DOCKER_REGISTRY
+                        docker push $AWS_DOCKER_REGISTRY/$APP_NAME:$REACT_APP_VERSION
+                    '''
+                }
             }
         }
         stage('Deploy to AWS') {
