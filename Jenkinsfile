@@ -50,7 +50,7 @@ pipeline {
                 //Install Docker using AWS Linux extras, as aws-cli image doesnt have docker installed.
                 sh '''
                     amazon-linux-extras install docker
-                    docker build -t myjenkinsapp .
+                    docker build -f ci/Dockerfile-nginx -t myjenkinsapp .
                 '''
             }
         }
