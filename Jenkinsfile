@@ -19,7 +19,7 @@ pipeline {
             }
         } */
 
-        /* stage('Build') {
+        stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -36,7 +36,12 @@ pipeline {
                     ls -la
                 '''
             }
-        } */
+        } 
+        stage('Build Docker image') {
+            steps {
+                sh 'docker build -f ci/Dockerfile -t myjenkinsapp .'
+            }
+        }
         stage('Deploy to AWS') {
             agent {
                 docker {
