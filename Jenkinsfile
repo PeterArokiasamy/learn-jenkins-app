@@ -40,7 +40,7 @@ pipeline {
         stage('Build Docker image') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'my-aws-cli'
                     reuseNode true
                     //"docker build" command below has to connect to Docker Daemon
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
@@ -56,7 +56,7 @@ pipeline {
         stage('Deploy to AWS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'my-aws-cli'
                     /*
                         Without --entrypoint, job will run for Infinite time. 
                         To start a container with above image, we need to pass args --entrypoint=''.
