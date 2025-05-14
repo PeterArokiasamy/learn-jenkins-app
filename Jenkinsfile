@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        NETLIFY_SITE_ID = '0b54cdfb-03ce-4180-a68c-a60067d572ff'
-        NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        /* NETLIFY_SITE_ID = '0b54cdfb-03ce-4180-a68c-a60067d572ff'
+        NETLIFY_AUTH_TOKEN = credentials('netlify-token') */
         REACT_APP_VERSION = "1.0.$BUILD_ID"
     }
 
@@ -14,7 +14,8 @@ pipeline {
                 sh 'docker build -t my-playwright .'
             }
         } */
-        stage('Build') {
+
+        /* stage('Build') {
             agent {
                 docker {
                     image 'node:18-alpine'
@@ -31,8 +32,8 @@ pipeline {
                     ls -la
                 '''
             }
-        }
-        stage('AWS') {
+        } */
+        stage('Deploy to AWS') {
             agent {
                 docker {
                     image 'amazon/aws-cli'
@@ -47,17 +48,18 @@ pipeline {
                 }
             }
             environment {
-                AWS_S3_BUCKET = 'learn-jenkins-peterarokia'
+                AWS_DEFAULT_REGION = 'us-east-1'
             }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        aws s3 sync build s3://$AWS_S3_BUCKET
+                        aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
                     '''
                 }
             }
         }
+        /*
         stage('Tests') {
             parallel {
                 stage('Unit tests') {
@@ -137,13 +139,13 @@ pipeline {
                 }
             }
         }
-        /* stage('Approval') {
+        stage('Approval') {
             steps {
                 timeout(time: 15, unit: 'MINUTES') {
                     input message: 'Do you wish to deploy to production?', ok: 'Yes, I am sure!'
                 }
             }
-        } */
+        } 
         stage('Deploy prod') {
             agent {
                 docker {
@@ -172,6 +174,6 @@ pipeline {
                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Prod E2E', reportTitles: '', useWrapperFileDirectly: true])
                 }
             }
-        }
+        } */
     }
 }
